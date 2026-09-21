@@ -1,0 +1,2804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fútbol Argentino: Incógnito & Conexiones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #162032;
+            --bg-input: #1e293b;
+            --accent-green: #22c55e;
+            --accent-green-hover: #16a34a;
+            --accent-blue: #38bdf8;
+            --accent-yellow: #eab308;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        /* TAB BAR SUPERIOR DE JUEGOS */
+        .game-tabs {
+            display: flex;
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .game-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .game-tab-btn.active {
+            background: var(--accent-blue);
+            color: #000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section-view {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section-view.active {
+            display: flex;
+        }
+
+        /* Banner de Modo */
+        .mode-selector {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .mode-btn.active {
+            background: var(--bg-input);
+            color: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            font-weight: 700;
+        }
+
+        /* Card de Pistas (Incógnito) */
+        .clues-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .clues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .attempts-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .dot.used { background: var(--accent-red); }
+        .dot.current { background: var(--accent-yellow); box-shadow: 0 0 8px var(--accent-yellow); }
+        .dot.success { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+
+        .clue-item {
+            background: var(--bg-input);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .clue-item .clue-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .clue-item.locked {
+            opacity: 0.4;
+            border-left-color: var(--border-color);
+            filter: blur(2px);
+            user-select: none;
+        }
+
+        /* Buscador / Autocomplete */
+        .search-section {
+            position: relative;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-submit {
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 0 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-green-hover);
+            transform: scale(1.02);
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .suggestions-dropdown.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--bg-input);
+            color: var(--accent-blue);
+        }
+
+        /* === SECCIÓN CONEXIONES === */
+        .connections-header {
+            text-align: center;
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .connections-header h3 {
+            color: var(--accent-purple);
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .connections-header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Grilla de Conexiones */
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .conn-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            aspect-ratio: 1.2 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .conn-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .conn-card.selected {
+            background: var(--accent-purple);
+            color: #000;
+            border-color: #fff;
+            transform: scale(0.96);
+        }
+
+        /* Categorías Resueltas */
+        .solved-category {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .solved-category .cat-title {
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .solved-category .cat-players {
+            font-size: 0.85rem;
+            color: rgba(0, 0, 0, 0.8);
+            font-weight: 600;
+        }
+
+        .conn-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn-conn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-conn:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .btn-conn.primary {
+            background: var(--accent-purple);
+            color: #000;
+            border: none;
+        }
+
+        .btn-conn.primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Modal Generico */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal h2 { font-size: 1.8rem; margin-bottom: 10px; }
+
+        .player-reveal {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            margin: 10px 0;
+            padding: 10px;
+            background: var(--bg-input);
+            border-radius: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: var(--bg-input);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .stat-number { font-size: 1.4rem; font-weight: 800; color: var(--accent-green); }
+        .stat-label { font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px; }
+
+        .action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-share {
+            background: var(--accent-blue);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-close {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-green);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚽ <span>FutbolAr</span></div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="openModal('statsModal')">📊</button>
+            <button class="icon-btn" onclick="openModal('helpModal')">❓</button>
+        </div>
+    </header>
+
+    <!-- NAVEGACIÓN ENTRE JUEGOS -->
+    <div class="game-tabs">
+        <button class="game-tab-btn active" id="tabIncognito" onclick="switchGame('incognito')">⚽ Jugador Incógnito</button>
+        <button class="game-tab-btn" id="tabConexiones" onclick="switchGame('conexiones')">🧩 Conexiones (4x4)</button>
+    </div>
+
+    <div class="container">
+
+        <!-- ================= SECCIÓN 1: JUGADOR INCÓGNITO ================= -->
+        <div class="section-view active" id="sectionIncognito">
+            <div class="mode-selector">
+                <button class="mode-btn active" id="btnModeDaily" onclick="switchModeIncognito('daily')">📅 Desafío Diario</button>
+                <button class="mode-btn" id="btnModePractice" onclick="switchModeIncognito('practice')">🔄 Práctica Infinito</button>
+            </div>
+
+            <div class="clues-card">
+                <div class="clues-header">
+                    <span id="clueCounterText">Pista 1 de 5</span>
+                    <div class="attempts-dots" id="attemptsDots">
+                        <div class="dot current"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div id="cluesList"></div>
+            </div>
+
+            <div class="search-section">
+                <div class="input-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Nombre del jugador..." autocomplete="off">
+                    <button class="btn-submit" onclick="submitGuess()">Patear</button>
+                </div>
+                <div class="suggestions-dropdown" id="suggestionsBox"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECCIÓN 2: CONEXIONES ================= -->
+        <div class="section-view" id="sectionConexiones">
+            <div class="connections-header">
+                <h3 id="connTitle">🧩 Conexiones #1</h3>
+                <p>Encontrá 4 grupos de 4 jugadores que compartan un elemento en común.</p>
+            </div>
+
+            <!-- Categorías ya adivinadas -->
+            <div id="solvedCategoriesContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+
+            <!-- Grilla 4x4 de Jugadores -->
+            <div class="connections-grid" id="connectionsGrid"></div>
+
+            <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">
+                Oportunidades fallidas restantes: <span id="connErrorsText" style="color: var(--accent-red); font-weight: 800;">4</span>/4
+            </div>
+
+            <div class="conn-controls">
+                <button class="btn-conn" onclick="deselectAllConnections()">Deseleccionar</button>
+                <button class="btn-conn" onclick="shuffleConnections()">Mezclar 🔀</button>
+                <button class="btn-conn primary" id="btnSubmitConn" onclick="submitConnection()" disabled>Enviar (0/4)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toast" id="toast">¡Copiado al portapapeles! 📋</div>
+
+    <!-- Modal Fin de Juego Incógnito -->
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal">
+            <h2 id="modalTitle">🎉 ¡GOLAZO!</h2>
+            <p id="modalSub">Adivinaste al jugador incógnito:</p>
+            <div class="player-reveal" id="modalPlayerName">-</div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="statPlayed">0</div>
+                    <div class="stat-label">Jugados</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statWinPct">0%</div>
+                    <div class="stat-label">% Victorias</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statStreak">0</div>
+                    <div class="stat-label">Racha</div>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <button class="btn-share" onclick="shareIncognitoResult()">📤 Compartir Resultado</button>
+                <button class="btn-close" id="btnNextPractice" style="display:none;" onclick="nextPracticeGame()">🎮 Siguiente Jugador</button>
+                <button class="btn-close" onclick="closeModal('gameModal')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Estadísticas generales -->
+    <div class="modal-overlay" id="statsModal">
+        <div class="modal">
+            <h2>📊 Tus Estadísticas</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="statPlayed2">0</div>
+                    <div class="stat-label">Jugados</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statWinPct2">0%</div>
+                    <div class="stat-label">% Victorias</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="statStreak2">0</div>
+                    <div class="stat-label">Racha</div>
+                </div>
+            </div>
+            <button class="btn-close" onclick="closeModal('statsModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal Ayuda -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal" style="text-align: left;">
+            <h2 style="text-align: center;">❓ ¿Cómo jugar?</h2>
+            <br>
+            <p><strong>⚽ Jugador Incógnito:</strong> Tenés 5 intentos para adivinar el personaje. Cada error desbloquea una nueva pista.</p>
+            <br>
+            <p><strong>🧩 Conexiones:</strong> Seleccioná 4 jugadores que compartan una característica secreta en común y tocá Enviar. ¡Buscá armar los 4 grupos!</p>
+            <br>
+            <button class="btn-close" style="width: 100%;" onclick="closeModal('helpModal')">¡Entendido!</button>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS EXTENSA (150+ JUGADORES)
+        const DATABASE = [
+  {
+    "nombre": "Juan Román Riquelme",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / N° 10",
+      "Trayectoria: Argentinos Juniors, Boca Juniors, Barcelona, Villarreal.",
+      "Anécdota: Le hizo el famoso festejo del 'Topo Gigio' a la directiva de su propio club.",
+      "Dato: Ganó 3 Copas Libertadores y 1 Intercontinental con Boca.",
+      "Apodo: 'El Último 10'"
+    ]
+  },
+  {
+    "nombre": "Martín Palermo",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Estudiantes LP, Boca, Villarreal, Betis, Alavés.",
+      "Anécdota: Erró 3 penales en un partido de Selección y le hizo un gol a Perú bajo lluvia torrencial.",
+      "Dato: Máximo goleador histórico de Boca Juniors (236 goles).",
+      "Apodo: 'El Titán' / 'El Loco'"
+    ]
+  },
+  {
+    "nombre": "Carlos Tevez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: Boca, Corinthians, West Ham, Man. United, Man. City, Juventus, Shanghai Shenhua.",
+      "Anécdota: Famoso por su festejo de la 'gallinita' en el Monumental.",
+      "Dato: Campeón de la Champions League y de la Copa Libertadores.",
+      "Apodo: 'El Apache' / 'El Jugador del Pueblo'"
+    ]
+  },
+  {
+    "nombre": "Edinson Cavani",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Delantero Centro",
+      "Trayectoria: Danubio, Palermo, Napoli, PSG, Manchester United, Valencia, Boca Juniors.",
+      "Anécdota: Famoso por festejar sus goles simulando tirar una flecha con un arco.",
+      "Dato: Máximo goleador histórico de la Selección Uruguaya detrás de Luis Suárez.",
+      "Apodo: 'El Matador'"
+    ]
+  },
+  {
+    "nombre": "Marcos Rojo",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor Central / Lateral",
+      "Trayectoria: Estudiantes LP, Spartak Moscú, Sporting Lisboa, Manchester United, Boca Juniors.",
+      "Anécdota: Tiró una rabona en su propia área chica durante un Mundial.",
+      "Dato: Marcó el gol agónico contra Nigeria en el Mundial de Rusia 2018.",
+      "Apodo: 'Marquitos'"
+    ]
+  },
+  {
+    "nombre": "Darío Benedetto",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Arsenal, Gimnasia (J), Tijuana, América, Boca, Marsella, Elche.",
+      "Anécdota: Famoso por sacar la lengua en el festejo de gol en la final en Madrid.",
+      "Dato: Tuvo un promedio de gol altísimo en su primera etapa en Boca.",
+      "Apodo: 'Pipa'"
+    ]
+  },
+  {
+    "nombre": "Sebastian Battaglia",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central",
+      "Trayectoria: Boca Juniors, Villarreal.",
+      "Anécdota: Volvió a Boca como DT y también salió campeón.",
+      "Dato: El jugador más ganador de títulos en la historia de Boca Juniors (18 títulos).",
+      "Apodo: 'Seba'"
+    ]
+  },
+  {
+    "nombre": "Hugo Ibarra",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral Derecho",
+      "Trayectoria: Colón, Boca Juniors, Porto, Mónaco, Espanyol.",
+      "Anécdota: Le hizo un golazo memorable de zurda a River en La Bombonera.",
+      "Dato: Ganó 4 Copas Libertadores y 1 Intercontinental.",
+      "Apodo: 'El Negro'"
+    ]
+  },
+  {
+    "nombre": "Oscar Córdoba",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Arquero",
+      "Trayectoria: América de Cali, Boca Juniors, Besiktas, Antalyaspor, Millonarios.",
+      "Anécdota: Figura estelar en la definición por penales contra Palmeiras y Cruz Azul.",
+      "Dato: Considerado uno de los mejores arqueros de la historia de la Copa Libertadores.",
+      "Apodo: 'Oscar'"
+    ]
+  },
+  {
+    "nombre": "Jorge Bermúdez",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Defensor Central",
+      "Trayectoria: América de Cali, Benfica, Boca Juniors, Olympiacos, Newell's.",
+      "Anécdota: Definió el último penal contra Palmeiras para ganar la Libertadores 2000.",
+      "Dato: Capitán del Boca multicampeón de Carlos Bianchi.",
+      "Apodo: 'El Patrón'"
+    ]
+  },
+  {
+    "nombre": "Mauricio Serna",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Volante Central",
+      "Trayectoria: Atlético Nacional, Boca Juniors, Puebla, Chacarita, Talleres.",
+      "Anécdota: Conocido por su raspaje implacable en el mediocampo y frases picantes.",
+      "Dato: Ídolo del Boca multicampeón de 1998 a 2001.",
+      "Apodo: 'Chicho'"
+    ]
+  },
+  {
+    "nombre": "Guillermo Barros Schelotto",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Extremo",
+      "Trayectoria: Gimnasia LP, Boca Juniors, Columbus Crew, Gimnasia LP.",
+      "Anécdota: Especialista en hacer expulsar rivales y declarar con picardía en los clásicos.",
+      "Dato: Ganó 16 títulos como jugador en Boca y 2 como DT.",
+      "Apodo: 'El Mellizo'"
+    ]
+  },
+  {
+    "nombre": "Agustín Rossi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Chacarita, Estudiantes LP, Defensa, Boca, Lanús, Al-Nassr, Flamengo.",
+      "Anécdota: Famoso por su increíble efectividad atajando penales en definiciones agónicas.",
+      "Dato: Mantuvo el arco en cero en múltiples definiciones clave con Boca.",
+      "Apodo: 'Agus'"
+    ]
+  },
+  {
+    "nombre": "Sergio Romero",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Racing, AZ Alkmaar, Sampdoria, Monaco, Manchester United, Venezia, Boca Juniors.",
+      "Anécdota: Heroico en los penales contra Holanda en Brasil 2014 ('Te convertís en héroe').",
+      "Dato: Arquero titular de la Selección Argentina en dos Copas del Mundo.",
+      "Apodo: 'Chiquito'"
+    ]
+  },
+  {
+    "nombre": "Miguel Merentiel",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Delantero Centro",
+      "Trayectoria: Peñarol, Lorca, Godoy Cruz, Defensa y Justicia, Palmeiras, Boca Juniors.",
+      "Anécdota: Famoso por gritarle a la cámara '¡Soy una bestia!' tras meter un gol.",
+      "Dato: Campeón de la Copa Sudamericana con Defensa y Justicia.",
+      "Apodo: 'La Bestia'"
+    ]
+  },
+  {
+    "nombre": "Kevin Zenón",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante / Extremo",
+      "Trayectoria: Unión de Santa Fe, Boca Juniors.",
+      "Anécdota: Metió el gol de tiro libre que salvó a Unión del descenso antes de ser vendido a Boca.",
+      "Dato: Se adaptó al instante convirtiéndose en figura en sus primeros partidos en Boca.",
+      "Apodo: 'Kevin'"
+    ]
+  },
+  {
+    "nombre": "Lautaro Blanco",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral Izquierdo",
+      "Trayectoria: Rosario Central, Elche, Boca Juniors.",
+      "Anécdota: Destacado por su precisa zurda para meter centros en carrera.",
+      "Dato: Fue convocado a la Selección Argentina tras su gran nivel en Central.",
+      "Apodo: 'Lauta'"
+    ]
+  },
+  {
+    "nombre": "Luis Advíncula",
+    "pistas": [
+      "Nacionalidad: Peruana | Posición: Lateral / Volante Derecho",
+      "Trayectoria: Sporting Cristal, Hoffenheim, Newell's, Tigres, Rayo Vallecano, Boca Juniors.",
+      "Anécdota: Metió un golazo de zurda a la angulo en la final de Copa Libertadores 2023.",
+      "Dato: Uno de los jugadores más veloces del fútbol sudamericano.",
+      "Apodo: 'Rayo' / 'Pichón'"
+    ]
+  },
+  {
+    "nombre": "Frank Fabra",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Lateral Izquierdo",
+      "Trayectoria: Envigado, Deportivo Cali, Independiente Medellín, Boca Juniors.",
+      "Anécdota: Expulsado en la final de la Libertadores 2023 por un cachetazo.",
+      "Dato: Uno de los extranjeros con más años consecutivos jugando en Boca.",
+      "Apodo: 'Frank'"
+    ]
+  },
+  {
+    "nombre": "Wilmar Barrios",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Volante Central",
+      "Trayectoria: Deportes Tolima, Boca Juniors, Zenit San Petersburgo.",
+      "Anécdota: Amado por la hinchada xeneize por su incansable despliegue y recuperaciones.",
+      "Dato: Campeón con Boca en las Superligas 2016/17 y 2017/18.",
+      "Apodo: 'Wilmar'"
+    ]
+  },
+  {
+    "nombre": "Fernando Gago",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central",
+      "Trayectoria: Boca Juniors, Real Madrid, Roma, Valencia, Vélez Sarsfield.",
+      "Anécdota: Transferido al Real Madrid por una cifra récord para la época.",
+      "Dato: Subcampeón del Mundo en Brasil 2014 y medallista olímpico de oro.",
+      "Apodo: 'Pintita'"
+    ]
+  },
+  {
+    "nombre": "Rolando Schiavi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor Central",
+      "Trayectoria: Argentino (R), Estudiantes (BA), Argentinos, Boca, Hércules, Grêmio, Newell's, Estudiantes LP.",
+      "Anécdota: Jugó una semifinal de Libertadores a préstamo para Estudiantes LP siendo jugador de Newell's.",
+      "Dato: Defensor implacable y ejecutante de penales letal.",
+      "Apodo: 'Flaco'"
+    ]
+  },
+  {
+    "nombre": "Roberto Abbondanzieri",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Rosario Central, Boca Juniors, Getafe, Internacional de Porto Alegre.",
+      "Anécdota: Famoso por atajar penales decisivos y sus despejes con el pie.",
+      "Dato: Elegido mejor arquero de Sudamérica en 2003.",
+      "Apodo: 'Pato'"
+    ]
+  },
+  {
+    "nombre": "Nahuel Molina",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral Derecho",
+      "Trayectoria: Boca Juniors, Defensa y Justicia, Rosario Central, Udinese, Atlético de Madrid.",
+      "Anécdota: Marcó el primer gol contra Holanda en cuartos de final de Qatar 2022 tras asistencia de Messi.",
+      "Dato: Campeón del Mundo en Qatar 2022 y Bi-campeón de América.",
+      "Apodo: 'Nahuel'"
+    ]
+  },
+  {
+    "nombre": "Valentín Barco",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral / Volante Izquierdo",
+      "Trayectoria: Boca Juniors, Brighton, Sevilla.",
+      "Anécdota: Famoso por pararse sobre la pelota en un clásico contra Palmeiras.",
+      "Dato: Gran revelación de la Copa Libertadores 2023 con solo 19 años.",
+      "Apodo: 'Colo'"
+    ]
+  },
+  {
+    "nombre": "Lucas Pratto",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero centro",
+      "Trayectoria: Tigre, Boca, Univ. Católica, Vélez, Sao Paulo, River, Feyenoord, Defensa y Justicia.",
+      "Anécdota: Convirtió un gol sacando del medio en una final histórica de Copa Libertadores.",
+      "Dato: Famoso por su festejo con los brazos cruzados.",
+      "Apodo: 'El Oso'"
+    ]
+  },
+  {
+    "nombre": "Enzo Pérez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Mediocampista",
+      "Trayectoria: Godoy Cruz, Estudiantes LP, Benfica, Valencia, River Plate.",
+      "Anécdota: Atajó los 90 minutos en Copa Libertadores por brote de COVID en el plantel.",
+      "Dato: Subcampeón del Mundo con la Selección Argentina en Brasil 2014.",
+      "Apodo: 'El Capitán'"
+    ]
+  },
+  {
+    "nombre": "Pity Martínez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante ofensivo",
+      "Trayectoria: Huracán, River Plate, Atlanta United, Al-Nassr.",
+      "Anécdota: Autor de la icónica corrida con el arco vacío para el 3-1 en el Bernabéu.",
+      "Dato: Elegido Mejor Jugador de América en el año 2018.",
+      "Apodo: 'El Pity'"
+    ]
+  },
+  {
+    "nombre": "Nacho Scocco",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: Newell's, Pumas UNAM, AEK Atenas, Internacional, Sunderland, River Plate.",
+      "Anécdota: Le convirtió 5 goles a Jorge Wilstermann en un solo partido de Libertadores.",
+      "Dato: Bi-campeón con Newell's (2004 y 2013) y multicampeón en River.",
+      "Apodo: 'Nacho'"
+    ]
+  },
+  {
+    "nombre": "Franco Armani",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Deportivo Merlo, Atlético Nacional, River Plate.",
+      "Anécdota: Mano a mano histórico atajado a Benedetto en la final de Libertadores 2018.",
+      "Dato: Campeón del Mundo en Qatar 2022 y bi-campeón de América con Atlético Nacional y River.",
+      "Apodo: 'El Pulpo'"
+    ]
+  },
+  {
+    "nombre": "Miguel Borja",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Delantero Centro",
+      "Trayectoria: Cortuluá, Livorno, Santa Fe, Atlético Nacional, Palmeiras, Junior, River Plate.",
+      "Anécdota: Famoso por su alegre baile del 'Colibrí' en los festejos de gol.",
+      "Dato: Campeón de la Copa Libertadores 2016 y goleador implacable en River.",
+      "Apodo: 'El Colibrí'"
+    ]
+  },
+  {
+    "nombre": "Claudio Echeverri",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / Extremo",
+      "Trayectoria: River Plate, Manchester City.",
+      "Anécdota: Le hizo un hat-trick inolvidable a Brasil en el Mundial Sub-17.",
+      "Dato: Vendido al Manchester City por una cifra millonaria antes de cumplir 18 años.",
+      "Apodo: 'Diablito'"
+    ]
+  },
+  {
+    "nombre": "Franco Mastantuono",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / Volante",
+      "Trayectoria: River Plate.",
+      "Anécdota: Se convirtió en el goleador más joven en la historia de River superando a Javier Saviola.",
+      "Dato: Joya zurda formada en las inferiores de River que deslumbró desde su debut en 2024.",
+      "Apodo: 'Franco'"
+    ]
+  },
+  {
+    "nombre": "Ariel Ortega",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / Extremo",
+      "Trayectoria: River Plate, Valencia, Sampdoria, Parma, Fenerbahce, Newell's, Independiente Rivadavia.",
+      "Anécdota: Famoso por sus gambetas endiabladas y sus goles emboquillando al arquero.",
+      "Dato: Ídolo absoluto de River y mundialista en 1994, 1998 y 2002.",
+      "Apodo: 'El Burrito'"
+    ]
+  },
+  {
+    "nombre": "Marcelo Gallardo",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / DT",
+      "Trayectoria: River Plate, Monaco, PSG, D.C. United, Nacional (Uruguay).",
+      "Anécdota: Como DT, le ganó a Boca dos finales de Copa y eliminaciones consecutivas.",
+      "Dato: El DT más ganador en la historia de River Plate (14 títulos).",
+      "Apodo: 'El Muñeco'"
+    ]
+  },
+  {
+    "nombre": "Fernando Cavenaghi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: River Plate, Spartak Moscú, Bordeaux, Mallorca, Internacional, Pachuca, APOEL.",
+      "Anécdota: Volvió en el peor momento histórico de River para lograr el ascenso a Primera.",
+      "Dato: Levantó la Copa Libertadores 2015 como capitán antes de retirarse.",
+      "Apodo: 'Torito'"
+    ]
+  },
+  {
+    "nombre": "Alejandro Domínguez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Enganche",
+      "Trayectoria: Quilmes, River, Rubin Kazan, Zenit, Valencia, Rayo Vallecano, Olympiacos.",
+      "Anécdota: Rescindió su contrato en Europa para volver a jugar en el Nacional B por amor al club.",
+      "Dato: Campeón de la Copa UEFA con el Zenit de San Petersburgo.",
+      "Apodo: 'Chori'"
+    ]
+  },
+  {
+    "nombre": "Jonatan Maidana",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor Central",
+      "Trayectoria: Los Andes, Boca Juniors, Metalist, Banfield, River Plate, Toluca.",
+      "Anécdota: Jugó en Boca pero se convirtió en un héroe y símbolo de la época dorada de River.",
+      "Dato: Ganó dos Copas Libertadores en River siendo pilar de la defensa.",
+      "Apodo: 'Jony'"
+    ]
+  },
+  {
+    "nombre": "Gabriel Mercado",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral / Defensor Central",
+      "Trayectoria: Racing, Estudiantes LP, River Plate, Sevilla, Al-Rayyan, Internacional.",
+      "Anécdota: Especialista en meter goles decisivos en finales de cabeza.",
+      "Dato: Campeón de América con River y gol a Francia en el Mundial 2018.",
+      "Apodo: 'Gabi'"
+    ]
+  },
+  {
+    "nombre": "Nacho Fernández",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Mixto",
+      "Trayectoria: Gimnasia LP, Temperley, River Plate, Atlético Mineiro.",
+      "Anécdota: Cerebro futbolístico del River de Gallardo en Madrid 2018.",
+      "Dato: Elegido en el equipo ideal de América en múltiples temporadas.",
+      "Apodo: 'Nacho' / 'Cerebro'"
+    ]
+  },
+  {
+    "nombre": "Nicolás De La Cruz",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Volante todoterreno",
+      "Trayectoria: Liverpool (Uruguay), River Plate, Flamengo.",
+      "Anécdota: Hermano menor de Carlos Sánchez, también ídolo de River.",
+      "Dato: Campeón de Copa Libertadores y pieza clave en la Selección Uruguaya de Bielsa.",
+      "Apodo: 'Nico'"
+    ]
+  },
+  {
+    "nombre": "Julián Álvarez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: River Plate, Manchester City, Atlético de Madrid.",
+      "Anécdota: Le convirtió 6 goles a Alianza Lima en un solo partido de Copa Libertadores.",
+      "Dato: Ganó Mundial, Copa América, Libertadores y Champions League antes de cumplir 24 años.",
+      "Apodo: 'La Araña'"
+    ]
+  },
+  {
+    "nombre": "Enzo Fernández",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Mediocampista Central",
+      "Trayectoria: River Plate, Defensa y Justicia, Benfica, Chelsea.",
+      "Anécdota: Campeón de Copa Sudamericana a préstamo en Defensa antes de romperla en River.",
+      "Dato: Elegido Mejor Jugador Joven del Mundial Qatar 2022.",
+      "Apodo: 'Enzo'"
+    ]
+  },
+  {
+    "nombre": "Javier Saviola",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: River Plate, Barcelona, Monaco, Sevilla, Real Madrid, Benfica, Malaga, Verona.",
+      "Anécdota: Debutó en la Primera de River a los 16 años metiendo un golazo.",
+      "Dato: Pichi de oro en el Mundial Sub-20 2001 marcando 11 goles.",
+      "Apodo: 'El Conejo'"
+    ]
+  },
+  {
+    "nombre": "Pablo Aimar",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche",
+      "Trayectoria: River Plate, Valencia, Real Zaragoza, Benfica, Johor Darul Ta'zim.",
+      "Anécdota: Ídolo máximo de la infancia de Lionel Messi.",
+      "Dato: Campeón de dos ligas españolas y Copa UEFA con el Valencia.",
+      "Apodo: 'El Payaso'"
+    ]
+  },
+  {
+    "nombre": "Enzo Francescoli",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Delantero / Enganche",
+      "Trayectoria: Wanderers, River Plate, Racing Matra, Cagliari, Torino.",
+      "Anécdota: Zinedine Zidane le puso 'Enzo' a su hijo en su honor por su elegancia.",
+      "Dato: Levanto la Copa Libertadores 1996 como capitán de River.",
+      "Apodo: 'El Príncipe'"
+    ]
+  },
+  {
+    "nombre": "Marcelo Salas",
+    "pistas": [
+      "Nacionalidad: Chilena | Posición: Delantero Centro",
+      "Trayectoria: Universidad de Chile, River Plate, Lazio, Juventus.",
+      "Anécdota: Celebraba sus goles hincando una rodilla en el suelo y mirando al cielo.",
+      "Dato: Máximo referente del fútbol chileno en la década de los 90.",
+      "Apodo: 'El Matador'"
+    ]
+  },
+  {
+    "nombre": "Juan Pablo Sorín",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral / Volante Izquierdo",
+      "Trayectoria: Argentinos, Juventus, River, Cruzeiro, Lazio, Barcelona, PSG, Villarreal, Hamburg.",
+      "Anécdota: Famoso por su melena voladora y su espíritu de ataque permanente.",
+      "Dato: Capitán de la Selección Argentina en el Mundial de Alemania 2006.",
+      "Apodo: 'Juampi'"
+    ]
+  },
+  {
+    "nombre": "Hernán Crespo",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: River Plate, Parma, Lazio, Inter, Chelsea, Milan, Genoa.",
+      "Anécdota: Marcó los dos goles en la final de la Copa Libertadores 1996 contra América de Cali.",
+      "Dato: Uno de los máximos goleadores históricos de la Selección Argentina.",
+      "Apodo: 'Valdanito'"
+    ]
+  },
+  {
+    "nombre": "Javier Mascherano",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central / Defensor",
+      "Trayectoria: River, Corinthians, West Ham, Liverpool, Barcelona, Hebei China, Estudiantes LP.",
+      "Anécdota: 'Hoy te convertís en héroe' le dijo a Chiquito Romero antes de los penales.",
+      "Dato: Doble medallista de oro olímpico (2004 y 2008) y referente de la Selección.",
+      "Apodo: 'El Jefecito'"
+    ]
+  },
+  {
+    "nombre": "Radamel Falcao",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Delantero Centro",
+      "Trayectoria: River Plate, Porto, Atlético de Madrid, Monaco, Manchester United, Chelsea, Rayo Vallecano, Millonarios.",
+      "Anécdota: Salido de las inferiores de River, deslumbró marcando un hat-trick a Botafogo.",
+      "Dato: Considerado en su momento el mejor 'N° 9' del mundo en el Atlético de Madrid.",
+      "Apodo: 'El Tigre'"
+    ]
+  },
+  {
+    "nombre": "Andrés D'Alessandro",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche",
+      "Trayectoria: River, Wolfsburgo, Portsmouth, Zaragoza, San Lorenzo, Internacional de Porto Alegre.",
+      "Anécdota: Creador de la famosa jugada gambeteadora 'La Boba'.",
+      "Dato: Ídolo absoluto y campeón de América en el Internacional de Brasil.",
+      "Apodo: 'El Cabezón'"
+    ]
+  },
+  {
+    "nombre": "Diego Milito",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Racing Club, Genoa, Real Zaragoza, Inter de Milán.",
+      "Anécdota: Volvió de Europa en plenitud para sacar campeón a Racing en 2014.",
+      "Dato: Marcó un doblete en la final de la UEFA Champions League 2010.",
+      "Apodo: 'El Príncipe'"
+    ]
+  },
+  {
+    "nombre": "Lisandro López",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: Racing, Porto, Olympique de Lyon, Al-Gharafa, Internacional, Sarmiento.",
+      "Anécdota: Famoso por su festejo llevándose el dedo índice a la sien.",
+      "Dato: Máximo goleador y capitán campeón con Racing en 2018/19.",
+      "Apodo: 'Licha'"
+    ]
+  },
+  {
+    "nombre": "Ricardo Centurión",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Extremo / Volante",
+      "Trayectoria: Racing, Genoa, Sao Paulo, Boca, San Lorenzo, Vélez, Barracas Central.",
+      "Anécdota: Famoso por su baile de la 'cumbia del fideo' y sus polémicas fuera de la cancha.",
+      "Dato: Salió campeón vistiendo la N° 10 tanto en Racing como en Boca.",
+      "Apodo: 'Ricky'"
+    ]
+  },
+  {
+    "nombre": "Lautaro Martínez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Racing Club, Inter de Milán.",
+      "Anécdota: Marcó el gol de la victoria en la final de la Copa América 2024 contra Colombia.",
+      "Dato: Campeón del Mundo en Qatar 2022 y capitán del Inter de Milán.",
+      "Apodo: 'El Toro'"
+    ]
+  },
+  {
+    "nombre": "Rodrigo De Paul",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Mixto",
+      "Trayectoria: Racing Club, Valencia, Udinese, Atlético de Madrid.",
+      "Anécdota: El 'motor' e inseparable socio de Lionel Messi en la Selección.",
+      "Dato: Campeón del Mundo en Qatar 2022 y Bi-campeón de América.",
+      "Apodo: 'Rodri' / 'El Motorcito'"
+    ]
+  },
+  {
+    "nombre": "Gabriel Hauche",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Extremo",
+      "Trayectoria: Temperley, Argentinos, Racing, Chievo Verona, Toluca, Millonarios, Aldosivi.",
+      "Anécdota: Especialista en marcar goles inolvidables en el clásico de Avellaneda.",
+      "Dato: Campeón con Racing en 2014 y referente querido por la hinchada.",
+      "Apodo: 'El Demonio'"
+    ]
+  },
+  {
+    "nombre": "Gustavo Bou",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: River, Olimpo, LDU Quito, Gimnasia LP, Racing, Tijuana, New England Revolution, Talleres.",
+      "Anécdota: Llegó a Racing casi sin prensa y formó una dupla destructiva con Diego Milito.",
+      "Dato: Goleador de la Copa Libertadores 2015 con 8 tantos.",
+      "Apodo: 'La Pantera'"
+    ]
+  },
+  {
+    "nombre": "Sebastián Saja",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: San Lorenzo, Brescia, Rayo Vallecano, América, Grêmio, AEK Atenas, Racing.",
+      "Anécdota: Famoso por su increíble efectividad pateando penales.",
+      "Dato: Campeón en San Lorenzo (Mercosur/Sudamericana) y capitán campeón con Racing en 2014.",
+      "Apodo: 'El Chino'"
+    ]
+  },
+  {
+    "nombre": "Gabriel Arias",
+    "pistas": [
+      "Nacionalidad: Chilena / Argentina | Posición: Arquero",
+      "Trayectoria: Olimpo, Defensa y Justicia, Unión La Calera, Racing Club.",
+      "Anécdota: Pieza clave con atajadas imposibles en la obtención del título 2018/19 con Coudet.",
+      "Dato: Arquero titular de la Selección de Chile en múltiples Copas América.",
+      "Apodo: 'Gabi'"
+    ]
+  },
+  {
+    "nombre": "Juan Fernando Quintero",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Enganche / N° 10",
+      "Trayectoria: Envigado, Atlético Nacional, Pescara, Porto, Rennes, River, Shenzhen, Junior, Racing.",
+      "Anécdota: Autor del golazo de zurda que puso el 2-1 en la final en Madrid con River.",
+      "Dato: Zurda prodigiosa e internacional con la Selección de Colombia en dos Mundiales.",
+      "Apodo: 'Juanfer'"
+    ]
+  },
+  {
+    "nombre": "Sergio Agüero",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: Independiente, Atlético de Madrid, Manchester City, Barcelona.",
+      "Anécdota: Le hizo un gol histórico a Racing encarando desde mitad de cancha con 17 años.",
+      "Dato: Debutó en Primera a los 15 años y 35 días (récord en Argentina).",
+      "Apodo: 'El Kun'"
+    ]
+  },
+  {
+    "nombre": "Ricardo Bochini",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / N° 10",
+      "Trayectoria: Independiente (único club en su carrera).",
+      "Anécdota: Máximo ídolo de la infancia de Diego Armando Maradona.",
+      "Dato: Ganó 5 Copas Libertadores y 2 Intercontinentales.",
+      "Apodo: 'El Bocha'"
+    ]
+  },
+  {
+    "nombre": "Ezequiel Barco",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante / Extremo",
+      "Trayectoria: Independiente, Atlanta United, River Plate, Spartak Moscú.",
+      "Anécdota: Marcó de penal el gol del título en el Maracaná en la Copa Sudamericana 2017.",
+      "Dato: Vendido por una cifra récord a la MLS con solo 18 años.",
+      "Apodo: 'Turri'"
+    ]
+  },
+  {
+    "nombre": "Nicolás Tagliafico",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral Izquierdo",
+      "Trayectoria: Banfield, Real Murcia, Independiente, Ajax, Lyon.",
+      "Anécdota: Capitán y símbolo que levantó la Copa Sudamericana 2017 en el Maracaná.",
+      "Dato: Campeón del Mundo en Qatar 2022 y Titular en la final.",
+      "Apodo: 'Nico'"
+    ]
+  },
+  {
+    "nombre": "Emmanuel Gigliotti",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Lamadrid, Argentinos, All Boys, San Lorenzo, Colón, Boca, Chongqing, Independiente, Toluca, León, Nacional.",
+      "Anécdota: Famoso por el penal atajado por Barovero en la Sudamericana 2014.",
+      "Dato: Goleador del Independiente campeón de la Sudamericana 2017.",
+      "Apodo: 'Puma'"
+    ]
+  },
+  {
+    "nombre": "Daniel Montenegro",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche",
+      "Trayectoria: Huracán, Independiente, Marseille, Zaragoza, Osasuna, Saturn, América (M).",
+      "Anécdota: Tuvo 4 etapas distintas jugando en Independiente.",
+      "Dato: Campeón con Independiente en el recordado Apertura 2002.",
+      "Apodo: 'Rolfi'"
+    ]
+  },
+  {
+    "nombre": "Diego Forlán",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Delantero",
+      "Trayectoria: Independiente, Manchester United, Villarreal, Atlético de Madrid, Inter, Internacional, Peñarol.",
+      "Anécdota: Surgido del fútbol juvenil de Independiente antes de dar el salto a Europa.",
+      "Dato: Elegido Mejor Jugador del Mundial de Sudáfrica 2010.",
+      "Apodo: 'Cachavacha'"
+    ]
+  },
+  {
+    "nombre": "Esteban Cambiasso",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central",
+      "Trayectoria: Argentinos, Real Madrid, Independiente, River, Inter de Milán, Leicester, Olympiacos.",
+      "Anécdota: Salió campeón con Independiente en 2002 siendo el eje del equipo.",
+      "Dato: Uno de los futbolistas argentinos con más títulos oficiales en la historia.",
+      "Apodo: 'Cuchu'"
+    ]
+  },
+  {
+    "nombre": "Néstor Ortigoza",
+    "pistas": [
+      "Nacionalidad: Paraguaya / Argentina | Posición: Mediocampista central",
+      "Trayectoria: Argentinos Juniors, Nueva Chicago, San Lorenzo, Olimpia, Rosario Central.",
+      "Anécdota: Especialista legendario en penales (casi 100% de efectividad).",
+      "Dato: Marcó el gol de penal para ganar la primera Libertadores de San Lorenzo (2014).",
+      "Apodo: 'Orti'"
+    ]
+  },
+  {
+    "nombre": "Leandro Romagnoli",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche",
+      "Trayectoria: San Lorenzo, Veracruz, Sporting de Lisboa.",
+      "Anécdota: Jugó lesionado por amor a la camiseta y es el jugador más ganador del club.",
+      "Dato: Ganó Mercosur, Sudamericana y Libertadores con San Lorenzo.",
+      "Apodo: 'Pipi'"
+    ]
+  },
+  {
+    "nombre": "Sebastián Torrico",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Godoy Cruz, Argentinos Juniors, San Lorenzo.",
+      "Anécdota: Atajó la pelota del campeonato contra Vélez a Allione en la última jugada de 2013.",
+      "Dato: Prócer máximo del arco de San Lorenzo en la Libertadores 2014.",
+      "Apodo: 'Cóndor'"
+    ]
+  },
+  {
+    "nombre": "Julio Buffarini",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Lateral / Volante Derecho",
+      "Trayectoria: Talleres, Atlético Tucumán, Ferro, San Lorenzo, Sao Paulo, Boca, Huesca, Talleres, Independiente.",
+      "Anécdota: Famoso por su ida y vuelta incansable y hacer una rabona jugando en Boca contra San Lorenzo.",
+      "Dato: Campeón de América con San Lorenzo en 2014.",
+      "Apodo: 'Buffa'"
+    ]
+  },
+  {
+    "nombre": "Ángel Correa",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Extremo",
+      "Trayectoria: San Lorenzo, Atlético de Madrid.",
+      "Anécdota: Tuvo que ser operado del corazón antes de debutar en España y salió adelante.",
+      "Dato: Campeón del Mundo en Qatar 2022 y de la Copa Libertadores 2014.",
+      "Apodo: 'Angelito'"
+    ]
+  },
+  {
+    "nombre": "Adam Bareiro",
+    "pistas": [
+      "Nacionalidad: Paraguaya | Posición: Delantero Centro",
+      "Trayectoria: Olimpia, Monterrey, San Lorenzo, Alanyaspor, San Luis, River Plate.",
+      "Anécdota: Celebró un gol haciendo el gesto del bigote dedicado a un árbitro.",
+      "Dato: Capitán y goleador determinante de San Lorenzo entre 2022 y 2024.",
+      "Apodo: 'El Príncipe'"
+    ]
+  },
+  {
+    "nombre": "Ezequiel Lavezzi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Extremo / Delantero",
+      "Trayectoria: Estudiantes (BA), San Lorenzo, Napoli, PSG, Hebei China.",
+      "Anécdota: Le tiró agua con la botella al DT Alejandro Sabella durante un partido del Mundial.",
+      "Dato: Campeón del Clausura 2007 con San Lorenzo y Subcampeón del Mundo en 2014.",
+      "Apodo: 'Pocho'"
+    ]
+  },
+  {
+    "nombre": "Mauro Zárate",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero",
+      "Trayectoria: Vélez, Al-Sadd, Birmingham, Lazio, Inter, West Ham, Fiorentina, Boca, América de Cali, Platense.",
+      "Anécdota: Dijo 'El que gana es un equipo grande' tras eliminar a Vélez jugando para Boca.",
+      "Dato: Goleador del torneo argentino en 2006 y 2014 con el Fortín.",
+      "Apodo: 'Maurito'"
+    ]
+  },
+  {
+    "nombre": "Fabián Cubero",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor / Volante",
+      "Trayectoria: Vélez Sarsfield, Tigres UANL.",
+      "Anécdota: Es el jugador con más expulsiones en la historia del fútbol argentino.",
+      "Dato: Jugador con más partidos disputados en la historia de Vélez (633 partidos).",
+      "Apodo: 'Poroto'"
+    ]
+  },
+  {
+    "nombre": "Thiago Almada",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Enganche / Volante",
+      "Trayectoria: Vélez Sarsfield, Atlanta United, Botafogo.",
+      "Anécdota: Salido de la villa Fuerte Apache al igual que Carlos Tevez.",
+      "Dato: Primer jugador en la historia de la MLS en salir Campeón del Mundo en activo.",
+      "Apodo: 'Guayo'"
+    ]
+  },
+  {
+    "nombre": "José Luis Chilavert",
+    "pistas": [
+      "Nacionalidad: Paraguaya | Posición: Arquero",
+      "Trayectoria: Luqueño, Guaraní, San Lorenzo, Zaragoza, Vélez, Estrasburgo, Peñarol.",
+      "Anécdota: Le hizo un gol de tiro libre desde mitad de cancha a Burgos (River).",
+      "Dato: Arquero más goleador en la historia del fútbol sudamericano y tricampeón del mundo con Vélez.",
+      "Apodo: 'Chila'"
+    ]
+  },
+  {
+    "nombre": "Juan Sebastián Verón",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central / Enganche",
+      "Trayectoria: Estudiantes, Boca, Sampdoria, Parma, Lazio, Manchester United, Chelsea, Inter.",
+      "Anécdota: Volvió de Europa para consagrarse campeón de la Libertadores 2009 con el club de sus amores.",
+      "Dato: Presidente e ídolo máximo contemporáneo de Estudiantes LP.",
+      "Apodo: 'La Brujita'"
+    ]
+  },
+  {
+    "nombre": "Mauro Boselli",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Boca, Málaga B, Estudiantes LP, Wigan, Genoa, Palermo, León, Corinthians, Cerro Porteño.",
+      "Anécdota: Marcó el gol de cabeza al Barcelona en la final del Mundial de Clubes 2009.",
+      "Dato: Máximo goleador de la Copa Libertadores 2009.",
+      "Apodo: 'Boselli'"
+    ]
+  },
+  {
+    "nombre": "Mariano Andújar",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Arquero",
+      "Trayectoria: Huracán, Palermo, Estudiantes LP, Catania, Napoli.",
+      "Anécdota: Mantuvo el récord de imbatibilidad en la Copa Libertadores 2009.",
+      "Dato: Subcampeón del Mundo en Brasil 2014 y referente histórico del Pincha.",
+      "Apodo: 'Mariano'"
+    ]
+  },
+  {
+    "nombre": "Santiago Ascacibar",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante Central",
+      "Trayectoria: Estudiantes LP, Stuttgart, Hertha Berlín, Cremonese.",
+      "Anécdota: Famoso por su garra desmedida y por tener tatuada la cara de Maradona.",
+      "Dato: Campeón de la Copa Argentina y Copa de la Liga con Estudiantes.",
+      "Apodo: 'Ruso'"
+    ]
+  },
+  {
+    "nombre": "Angel Di María",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Extremo",
+      "Trayectoria: Rosario Central, Benfica, Real Madrid, PSG, Juventus, Manchester United.",
+      "Anécdota: Hizo goles picándola en finales de Juegos Olímpicos, Copa América, Finalissima y Mundial.",
+      "Dato: Salió de la cantera canalla y es leyenda absoluta de la Selección.",
+      "Apodo: 'Fideo'"
+    ]
+  },
+  {
+    "nombre": "Marco Ruben",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Rosario Central, River, Villarreal, Recreativo, Dinamo Kiev, Evian, Tigres, Athletico Paranaense.",
+      "Anécdota: Se retiró, volvió del retiro por amor a Central y se convirtió en el máximo goleador histórico profesional del club.",
+      "Dato: Máximo goleador de Rosario Central en la era profesional.",
+      "Apodo: 'Marco'"
+    ]
+  },
+  {
+    "nombre": "Maxi Rodríguez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante / Extremo",
+      "Trayectoria: Newell's, Espanyol, Atlético de Madrid, Liverpool, Peñarol.",
+      "Anécdota: Autor del inolvidable golazo de volea de zurda a México en el Mundial 2006.",
+      "Dato: Ídolo contemporáneo de Newell's Old Boys y campeón en 2013.",
+      "Apodo: 'La Fiera'"
+    ]
+  },
+  {
+    "nombre": "Gabriel Heinze",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor Central / Lateral",
+      "Trayectoria: Newell's, Valladolid, PSG, Manchester United, Real Madrid, Marseille, Roma.",
+      "Anécdota: Jugó en los gigantes del mundo y volvió a Newell's para ser campeón con Martino.",
+      "Dato: Campeón en Inglaterra, España y Francia.",
+      "Apodo: 'Gringo'"
+    ]
+  },
+  {
+    "nombre": "Diego Armando Maradona",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: N° 10 / Enganche",
+      "Trayectoria: Argentinos Juniors, Boca Juniors, Barcelona, Napoli, Sevilla, Newell's.",
+      "Anécdota: Hizo 'La Mano de Dios' y 'El Gol del Siglo' en el mismo partido.",
+      "Dato: Campeón del Mundo en México 1986 y Dios del fútbol argentino.",
+      "Apodo: 'D10S' / 'El Pelusa'"
+    ]
+  },
+  {
+    "nombre": "Lionel Messi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Enganche",
+      "Trayectoria: Barcelona, PSG, Inter Miami (Inferiores en Newell's).",
+      "Anécdota: Levantó la Copa del Mundo en Qatar 2022 luciendo la túnica Bisht.",
+      "Dato: Ganador de 8 Balones de Oro y el jugador más laureado de la historia.",
+      "Apodo: 'La Pulga' / 'GOAT'"
+    ]
+  },
+  {
+    "nombre": "Luis Miguel Rodríguez",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Enganche",
+      "Trayectoria: Atlético Tucumán, Colón, Gimnasia LP, Central Córdoba, Jujuy.",
+      "Anécdota: Llevó a Colón a salir campeón por primera vez en su historia en 2021.",
+      "Dato: Ídolo popular de todo el fútbol argentino por su magia y humildad.",
+      "Apodo: 'El Pulga'"
+    ]
+  },
+  {
+    "nombre": "José Sand",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: River, Colón, Lanús, Banfield, Racing, Tigre, Dep. Cali, Aldosivi.",
+      "Anécdota: Se retiró del fútbol pasados los 43 años siendo ídolo absoluto.",
+      "Dato: Máximo goleador histórico de Lanús.",
+      "Apodo: 'Pepe'"
+    ]
+  },
+  {
+    "nombre": "Brahian Alemán",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Volante creativo",
+      "Trayectoria: Defensor Sporting, Unión, Barcelona SC, Liga de Quito, Gimnasia LP, Banfield, Tigre.",
+      "Anécdota: Pegada exquisita de zurda y temperamento muy picante en la cancha.",
+      "Dato: Capitán y figura de Gimnasia y Esgrima La Plata durante varios años.",
+      "Apodo: 'El Uruguayo'"
+    ]
+  },
+  {
+    "nombre": "Lautaro Acosta",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Extremo",
+      "Trayectoria: Lanús, Sevilla, Xerez, Racing, Boca Juniors.",
+      "Anécdota: Símbolo eterno de la época dorada de Lanús.",
+      "Dato: Ganó 5 títulos con Lanús incluyendo la Copa Sudamericana 2013.",
+      "Apodo: 'Laucha'"
+    ]
+  },
+  {
+    "nombre": "Santiago Silva",
+    "pistas": [
+      "Nacionalidad: Uruguaya | Posición: Delantero Centro",
+      "Trayectoria: Defensor, Corinthians, Gimnasia, Vélez, Banfield, Boca, Lanús, Arsenal, Talleres, Argentinos.",
+      "Anécdota: Famoso por pelarse la cabeza y festejar los goles de manera eufórica.",
+      "Dato: Campeón con Banfield (2009), Vélez (2011) y Boca (2012).",
+      "Apodo: 'El Tanque'"
+    ]
+  },
+  {
+    "nombre": "Esteban Fuertes",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Independiente, Elche, Racing, Derby County, Colón, Tenerife, River, Universidad Católica.",
+      "Anécdota: Máximo ídolo y goleador indiscutido en la historia del Sabalero.",
+      "Dato: Anotó 144 goles con la camiseta de Colón de Santa Fe.",
+      "Apodo: 'Bichi'"
+    ]
+  },
+  {
+    "nombre": "Mateo Retegui",
+    "pistas": [
+      "Nacionalidad: Argentina / Italiana | Posición: Delantero Centro",
+      "Trayectoria: Boca Juniors, Estudiantes LP, Talleres, Tigre, Genoa, Atalanta.",
+      "Anécdota: Pasó de jugar al hockey sobre césped a ser el goleador del fútbol argentino.",
+      "Dato: Convocado a la Selección de Italia donde debutó haciendo goles.",
+      "Apodo: 'Chapa'"
+    ]
+  },
+  {
+    "nombre": "Ricardo Caruso Lombardi",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: DT / Ex Jugador",
+      "Trayectoria: Defensores de Belgrano, Sportivo Italiano, Argentinos, Newell's, Racing, San Lorenzo, Tigre.",
+      "Anécdota: Famoso por salvar equipos del descenso y pelearse con Fabián García en la calle.",
+      "Dato: El 'salvador de la patria' del descenso argentino.",
+      "Apodo: 'Richard' / 'Tano'"
+    ]
+  },
+  {
+    "nombre": "Gabriel Batistuta",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Newell's, River, Boca, Fiorentina, Roma, Inter, Al-Arabi.",
+      "Anécdota: Jugó en River y luego pasó a Boca donde la rompió antes de ir a Italia.",
+      "Dato: Máximo goleador argentino en mundiales hasta Qatar 2022.",
+      "Apodo: 'Batigol'"
+    ]
+  },
+  {
+    "nombre": "Claudio Caniggia",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero / Extremo",
+      "Trayectoria: River, Verona, Atalanta, Roma, Benfica, Boca, Atalanta, Rangers, Qatar SC.",
+      "Anécdota: El gol a Brasil en Italia 90 tras pase de Maradona.",
+      "Dato: Jugó en River y en Boca formando una dupla mítica con Maradona.",
+      "Apodo: 'El Hijo del Viento'"
+    ]
+  },
+  {
+    "nombre": "Oscar Ruggeri",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Defensor Central",
+      "Trayectoria: Boca, River, Logroñés, Real Madrid, Vélez, Ancona, América, San Lorenzo, Lanús.",
+      "Anécdota: Pasó directo de Boca a River en un trueque histórico que generó gran polémica.",
+      "Dato: Campeón del Mundo 1986 y Campeón de la Libertadores y la Intercontinental.",
+      "Apodo: 'El Cabezón'"
+    ]
+  },
+  {
+    "nombre": "Jaminton Campaz",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Extremo / Volante",
+      "Trayectoria: Deportes Tolima, Grêmio, Rosario Central.",
+      "Anécdota: Destacado por su gambeta indescifrable y sus bailes en los festejos.",
+      "Dato: Campeón de la Copa de la Liga 2023 con Rosario Central siendo la gran figura.",
+      "Apodo: 'Bicho'"
+    ]
+  },
+  {
+    "nombre": "Edwin Cardona",
+    "pistas": [
+      "Nacionalidad: Colombiana | Posición: Enganche",
+      "Trayectoria: Atlético Nacional, Santa Fe, Junior, Monterrey, Boca, Pachuca, Tijuana, Racing, América de Cali.",
+      "Anécdota: Le clavó un golazo de tiro libre al ángulo a River en el Monumental.",
+      "Dato: Zurda y derecha privilegiadas para el tiro libre.",
+      "Apodo: 'Crackdona'"
+    ]
+  },
+  {
+    "nombre": "Brian Sarmiento",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Volante / Extremo",
+      "Trayectoria: Racing Santander, Xerez, Girona, Salamanca, Arsenal, All Boys, Banfield, Real Garcilaso, Newell's.",
+      "Anécdota: Famoso por su frase viral 'TAMO ACTIVO' en redes sociales.",
+      "Dato: Personaje carismático que combinó fútbol y show mediático.",
+      "Apodo: 'Brian'"
+    ]
+  },
+  {
+    "nombre": "Cristian Fabbiani",
+    "pistas": [
+      "Nacionalidad: Argentina | Posición: Delantero Centro",
+      "Trayectoria: Lanús, Palestino, Beitar Jerusalén, Cluj, Newell's, River, Independiente Rivadavia, Sport Boys, Merlo.",
+      "Anécdota: Jugaba con careta de Shrek en Newell's y generó la 'Ogro-manía' al llegar a River.",
+      "Dato: Jugador de una calidad técnica descomunal y físico sobrepeso carismático.",
+      "Apodo: 'El Ogro'"
+    ]
+  },
+  {
+    "nombre": "Ubaldo Fillol",
+    "pistas": [
+      "Posición: Arquero",
+      "Trayectoria: River, Racing, Flamengo, Vélez",
+      "Anécdota / Detalle: Considerado uno de los mejores arqueros de la historia argentina.",
+      "Dato: Campeón del Mundo en 1978.",
+      "Apodo: 'El Pato'"
+    ]
+  },
+  {
+    "nombre": "Mario Alberto Kempes",
+    "pistas": [
+      "Posición: Delantero",
+      "Trayectoria: Instituto, Rosario Central, Valencia, River, Hércules",
+      "Anécdota / Detalle: Goleador y figura absoluta del Mundial 1978.",
+      "Dato: Hizo dos goles en la final contra Holanda.",
+      "Apodo: 'El Matador'"
+    ]
+  },
+  {
+    "nombre": "Javier Zanetti",
+    "pistas": [
+      "Posición: Lateral / Volante",
+      "Trayectoria: Talleres (RE), Banfield, Inter de Milán",
+      "Anécdota / Detalle: Jugó más de 800 partidos en el Inter de Milán.",
+      "Dato: Capitán histórico del Inter y leyenda de la Selección.",
+      "Apodo: 'Pupi'"
+    ]
+  },
+  {
+    "nombre": "Walter Samuel",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Newell's, Boca, Roma, Real Madrid, Inter, Basel",
+      "Anécdota / Detalle: Muro inexpugnable de la defensa de Boca y el Inter.",
+      "Dato: Campeón de la Champions League 2010.",
+      "Apodo: 'El Muro'"
+    ]
+  },
+  {
+    "nombre": "Pablo Guiñazú",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Newell's, Perugia, Independiente, Libertad, Internacional, Vasco, Talleres",
+      "Anécdota / Detalle: Ascendió a Talleres con un golazo agónico de afuera del área a los 38 años.",
+      "Dato: Ídolo absoluto en Internacional de Porto Alegre.",
+      "Apodo: 'Cholo'"
+    ]
+  },
+  {
+    "nombre": "Michael Santos",
+    "pistas": [
+      "Posición: Delantero",
+      "Trayectoria: River Plate (U), Málaga, Sporting Gijón, Leganés, Talleres, Juárez",
+      "Anécdota / Detalle: Goleador del torneo argentino 2023 vistiendo la camiseta de Talleres.",
+      "Dato: Dupla temible con Diego Valoyes.",
+      "Apodo: 'Pelo'"
+    ]
+  },
+  {
+    "nombre": "Diego Valoyes",
+    "pistas": [
+      "Posición: Extremo",
+      "Trayectoria: La Equidad, Talleres, Juárez",
+      "Anécdota / Detalle: Velocidad y potencia desbordante por la banda derecha.",
+      "Dato: Internacional con la Selección de Colombia.",
+      "Apodo: 'Diego'"
+    ]
+  },
+  {
+    "nombre": "Pablo Vegetti",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Villa San Carlos, Gimnasia LP, Colón, Instituto, Belgrano, Vasco da Gama",
+      "Anécdota / Detalle: Máximo goleador de Belgrano de Córdoba y figura en Brasil.",
+      "Dato: Goleador de raza pura del ascenso y Primera.",
+      "Apodo: 'El Toro'"
+    ]
+  },
+  {
+    "nombre": "Rodrigo Aliendro",
+    "pistas": [
+      "Posición: Volante Mixto",
+      "Trayectoria: Chacarita, Ituzaingó, Atlético Tucumán, Colón, River Plate",
+      "Anécdota / Detalle: Marcó un golazo agónico de media distancia en la final de la Supercopa a Estudiantes.",
+      "Dato: Campeón con Colón y con River.",
+      "Apodo: 'Peti'"
+    ]
+  },
+  {
+    "nombre": "Federico Lértora",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Ferro, Godoy Cruz, Arsenal, Belgrano, Colón, Tijuana, Querétaro",
+      "Anécdota / Detalle: Eje táctico y equilibrio del Colón campeón 2021.",
+      "Dato: Rendimiento parejo y marca férrea.",
+      "Apodo: 'Fede'"
+    ]
+  },
+  {
+    "nombre": "Leonardo Ponzio",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Newell's, Zaragoza, River Plate",
+      "Anécdota / Detalle: Símbolo, capitán y león del ciclo más ganador de la historia de River con Gallardo.",
+      "Dato: El jugador más ganador en la historia de River con 17 títulos.",
+      "Apodo: 'El León'"
+    ]
+  },
+  {
+    "nombre": "Cristian Medina",
+    "pistas": [
+      "Posición: Volante Mixto",
+      "Trayectoria: Boca Juniors",
+      "Anécdota / Detalle: Salió de Boca Predio deslumbrando con su pisada y visión de juego.",
+      "Dato: Pieza fundamental en el mediocampo de Boca.",
+      "Apodo: 'Medina'"
+    ]
+  },
+  {
+    "nombre": "Ezequiel Fernández",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Boca Juniors, Tigre, Al-Qadsiah",
+      "Anécdota / Detalle: Pase filtrado y manejo impecable con ambas piernas.",
+      "Dato: Figura estelar en Tigre y en Boca.",
+      "Apodo: 'Equi'"
+    ]
+  },
+  {
+    "nombre": "Guido Rodríguez",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: River, Defensa y Justicia, Tijuana, América, Betis, West Ham",
+      "Anécdota / Detalle: Campeón del Mundo en Qatar 2022 y Bi-campeón de América.",
+      "Dato: Especialista en robos de pelota.",
+      "Apodo: 'Guido'"
+    ]
+  },
+  {
+    "nombre": "Exequiel Palacios",
+    "pistas": [
+      "Posición: Volante Mixto",
+      "Trayectoria: River Plate, Bayer Leverkusen",
+      "Anécdota / Detalle: Campeón invicto de la Bundesliga con Xabi Alonso y Campeón del Mundo.",
+      "Dato: Despliegue y dinámica brillante.",
+      "Apodo: 'Tucu'"
+    ]
+  },
+  {
+    "nombre": "Gonzalo Montiel",
+    "pistas": [
+      "Posición: Lateral Derecho",
+      "Trayectoria: River Plate, Sevilla, Nottingham Forest",
+      "Anécdota / Detalle: Pateó el penal definitivo que consagró a Argentina Campeón del Mundo en Qatar.",
+      "Dato: Efectividad del 100% en penales.",
+      "Apodo: 'Cachete'"
+    ]
+  },
+  {
+    "nombre": "Lucas Martínez Quarta",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: River Plate, Fiorentina",
+      "Anécdota / Detalle: Tipeo técnico e inicio limpio de jugadas desde el fondo.",
+      "Dato: Campeón de América con River y la Selección.",
+      "Apodo: 'Chino'"
+    ]
+  },
+  {
+    "nombre": "Milton Casco",
+    "pistas": [
+      "Posición: Lateral Izquierdo",
+      "Trayectoria: Gimnasia LP, Newell's, River Plate",
+      "Anécdota / Detalle: Ambidiestro capaz de jugar por ambas bandas con idéntica solvencia.",
+      "Dato: Campeón con Newell's 2013 y multicampeón en River.",
+      "Apodo: 'Milton'"
+    ]
+  },
+  {
+    "nombre": "Germán Pezzella",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: River Plate, Betis, Fiorentina",
+      "Anécdota / Detalle: Hizo el gol del empate bajo una tormenta torrencial contra Boca.",
+      "Dato: Campeón del Mundo en Qatar 2022.",
+      "Apodo: 'Bahía'"
+    ]
+  },
+  {
+    "nombre": "Beto Acosta",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Unión, San Lorenzo, Toulouse, Boca, Universidad Católica, Sporting Lisboa",
+      "Anécdota / Detalle: Dupla letal con Néstor Gorosito en San Lorenzo y Católica.",
+      "Dato: Goleador letal en los años 90.",
+      "Apodo: 'El Beto'"
+    ]
+  },
+  {
+    "nombre": "Néstor Gorosito",
+    "pistas": [
+      "Posición: Enganche",
+      "Trayectoria: River, San Lorenzo, Swarovski Tirol, Universidad Católica, Yokohama Marinos",
+      "Anécdota / Detalle: Pegada mágica y clase pura de N° 10 clásico.",
+      "Dato: Ídolo de San Lorenzo y Universidad Católica.",
+      "Apodo: 'Pipo'"
+    ]
+  },
+  {
+    "nombre": "Fabricio Coloccini",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Boca, Milan, San Lorenzo, Alavés, Villarreal, Deportivo La Coruña, Newcastle",
+      "Anécdota / Detalle: Larga cabellera rulosas y firmeza defensiva europea.",
+      "Dato: Campeón con San Lorenzo en 2001.",
+      "Apodo: 'Colo'"
+    ]
+  },
+  {
+    "nombre": "Gaston Fernández",
+    "pistas": [
+      "Posición: Delantero / Enganche",
+      "Trayectoria: River, Racing, Monterrey, San Lorenzo, Tigres, Estudiantes, Universidad de Chile, Portland",
+      "Anécdota / Detalle: Marcó el gol del empate en la final de la Libertadores 2009 en Belo Horizonte.",
+      "Dato: Lujoso y determinante.",
+      "Apodo: 'La Gata'"
+    ]
+  },
+  {
+    "nombre": "Braian Romero",
+    "pistas": [
+      "Posición: Delantero",
+      "Trayectoria: Acassuso, Colón, Argentinos, Independiente, Athletico Paranaense, Defensa, River, Internacional, Vélez",
+      "Anécdota / Detalle: Goleador histórico de Defensa en la Sudamericana 2020.",
+      "Dato: Campeón de la Recopa y Liga.",
+      "Apodo: 'Braian'"
+    ]
+  },
+  {
+    "nombre": "Lucas Orellano",
+    "pistas": [
+      "Posición: Extremo",
+      "Trayectoria: Vélez Sarsfield, Vasco da Gama, FC Cincinnati",
+      "Anécdota / Detalle: Zurda explosiva para encarar de afuera hacia adentro.",
+      "Dato: Surgido de la gran cantera fortinera.",
+      "Apodo: 'Luca'"
+    ]
+  },
+  {
+    "nombre": "José Luis Gómez",
+    "pistas": [
+      "Posición: Lateral Derecho",
+      "Trayectoria: Quilmes, Racing, San Lorenzo, Lanús",
+      "Anécdota / Detalle: Nivel superlativo en el Lanús finalista de Libertadores 2017.",
+      "Dato: Llegó a la Selección Argentina.",
+      "Apodo: 'La Coneja'"
+    ]
+  },
+  {
+    "nombre": "Iván Marcone",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Arsenal, Lanús, Cruz Azul, Boca Juniors, Elche, Independiente",
+      "Anécdota / Detalle: Hincha fanático y capitán del club de sus amores (Independiente).",
+      "Dato: Campeón en Arsenal, Lanús y Boca.",
+      "Apodo: 'Capo'"
+    ]
+  },
+  {
+    "nombre": "Federico Mancuello",
+    "pistas": [
+      "Posición: Volante",
+      "Trayectoria: Independiente, Belgrano, Flamengo, Cruzeiro, Toluca, Puebla",
+      "Anécdota / Detalle: Pegada magistral de zurda en tiros libres y tiros de esquina.",
+      "Dato: Llegó a la Selección convirtiendo un golazo.",
+      "Apodo: 'Mancu'"
+    ]
+  },
+  {
+    "nombre": "Emmanuel Mas",
+    "pistas": [
+      "Posición: Lateral Izquierdo",
+      "Trayectoria: San Lorenzo, Trabzonspor, Boca Juniors, Orlando City, Estudiantes LP, Colón",
+      "Anécdota / Detalle: Campeón de América con San Lorenzo en 2014.",
+      "Dato: Proyección constante por izquierda.",
+      "Apodo: 'Emma'"
+    ]
+  },
+  {
+    "nombre": "Sebastián Blanco",
+    "pistas": [
+      "Posición: Volante / Extremo",
+      "Trayectoria: Lanús, Metalist, San Lorenzo, Portland Timbers",
+      "Anécdota / Detalle: Habilidad endiablada en el Lanús campeón 2007.",
+      "Dato: Figura en la MLS durante varios años.",
+      "Apodo: 'Seba'"
+    ]
+  },
+  {
+    "nombre": "Gustavo Gómez",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Libertad, Lanús, Milan, Palmeiras",
+      "Anécdota / Detalle: Capitán y multicampeón de América con Palmeiras.",
+      "Dato: Pilar defensivo de Lanús campeón 2016.",
+      "Apodo: 'El Mariscal'"
+    ]
+  },
+  {
+    "nombre": "Miguel Almirón",
+    "pistas": [
+      "Posición: Volante / Extremo",
+      "Trayectoria: Cerro Porteño, Lanús, Atlanta United, Newcastle United",
+      "Anécdota / Detalle: Velocidad eléctrica que brilló en Lanús antes de la Premier League.",
+      "Dato: Estrella de la Selección Paraguaya.",
+      "Apodo: 'Miggy'"
+    ]
+  },
+  {
+    "nombre": "Walter Erviti",
+    "pistas": [
+      "Posición: Volante",
+      "Trayectoria: San Lorenzo, Monterrey, Banfield, Boca, Atlante, Independiente",
+      "Anécdota / Detalle: Eje futbolístico del Banfield campeón 2009 junto a James Rodríguez.",
+      "Dato: Calidad táctica refinada.",
+      "Apodo: 'Cañita'"
+    ]
+  },
+  {
+    "nombre": "James Rodríguez",
+    "pistas": [
+      "Posición: Enganche",
+      "Trayectoria: Envigado, Banfield, Porto, Monaco, Real Madrid, Bayern Munich, Everton, São Paulo, Rayo",
+      "Anécdota / Detalle: Salió campeón en Argentina con Banfield siendo un jovencito de 18 años.",
+      "Dato: Bota de Oro del Mundial Brasil 2014.",
+      "Apodo: 'James'"
+    ]
+  },
+  {
+    "nombre": "Darío Cvitanich",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Banfield, Ajax, Pachuca, Boca Juniors, Niza, Racing",
+      "Anécdota / Detalle: Goleador de raza y referente de Banfield.",
+      "Dato: Campeón invicto con Boca en 2011.",
+      "Apodo: 'Daro'"
+    ]
+  },
+  {
+    "nombre": "Jesús Dátolo",
+    "pistas": [
+      "Posición: Volante",
+      "Trayectoria: Banfield, Boca, Nápoli, Olympiacos, Espanyol, Internacional, Atlético Mineiro",
+      "Anécdota / Detalle: Pegada prodigiosa de zurda y multicampeón en Boca.",
+      "Dato: Marcó un golazo con la Selección a Brasil.",
+      "Apodo: 'Jesús'"
+    ]
+  },
+  {
+    "nombre": "Jorge Broun",
+    "pistas": [
+      "Posición: Arquero",
+      "Trayectoria: Rosario Central, Antofagasta, Colón, Ludogorets, Gimnasia LP",
+      "Anécdota / Detalle: Figura colosal atajando penales en la Copa de la Liga 2023 con Central.",
+      "Dato: Ídolo canalla.",
+      "Apodo: 'Fatu'"
+    ]
+  },
+  {
+    "nombre": "Ignacio Malcorra",
+    "pistas": [
+      "Posición: Volante / Enganche",
+      "Trayectoria: CAI, Aldosivi, Unión, Tijuana, Pumas, Atlas, Lanús, Rosario Central",
+      "Anécdota / Detalle: Especialista número uno en tiros libres y centros envenenados.",
+      "Dato: Hizo el gol del triunfo en el clásico rosarino.",
+      "Apodo: 'Nacho'"
+    ]
+  },
+  {
+    "nombre": "Kily González",
+    "pistas": [
+      "Posición: Volante Izquierdo / DT",
+      "Trayectoria: Rosario Central, Boca, Zaragoza, Valencia, Inter de Milán",
+      "Anécdota / Detalle: Garra y corazón rosarino en la Selección y en Europa.",
+      "Dato: Campeón en España e Italia.",
+      "Apodo: 'Kily'"
+    ]
+  },
+  {
+    "nombre": "Claudio Yacob",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Racing Club, West Bromwich, Nottingham Forest, Nacional, Huracán, Universitario",
+      "Anécdota / Detalle: Elegancia y marca en la mitad de cancha de Racing.",
+      "Dato: Años consolidado en la Premier League.",
+      "Apodo: 'Flaco'"
+    ]
+  },
+  {
+    "nombre": "Luciano Vietto",
+    "pistas": [
+      "Posición: Delantero",
+      "Trayectoria: Racing Club, Villarreal, Atlético de Madrid, Sevilla, Valencia, Fulham, Sporting, Al-Hilal",
+      "Anécdota / Detalle: Surgido de la 'Camada de los Pibes' en Racing con Zubeldía.",
+      "Dato: Hat-trick al Real Madrid con Al-Hilal.",
+      "Apodo: 'Lucho'"
+    ]
+  },
+  {
+    "nombre": "Bruno Zuculini",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Racing Club, Manchester City, Valencia, Verona, River Plate",
+      "Anécdota / Detalle: Dinámica y contagio de energía en el mediocampo.",
+      "Dato: Campeón de América con River.",
+      "Apodo: 'Zucu'"
+    ]
+  },
+  {
+    "nombre": "Mariano Pavone",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Estudiantes LP, Betis, River, Lanús, Cruz Azul, Vélez, Quilmes",
+      "Anécdota / Detalle: Marcó el gol del título contra Boca en la final del Apertura 2006.",
+      "Dato: Potencia física incontenible.",
+      "Apodo: 'Tanque'"
+    ]
+  },
+  {
+    "nombre": "Rodrigo Braña",
+    "pistas": [
+      "Posición: Volante Central",
+      "Trayectoria: Quilmes, Mallorca B, Estudiantes LP, Rosario Central",
+      "Anécdota / Detalle: El motor combativo de Estudiantes en la Libertadores 2009.",
+      "Dato: Símbolo de entrega total.",
+      "Apodo: 'El Chapu'"
+    ]
+  },
+  {
+    "nombre": "Leandro Desábato",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Estudiantes LP, Olimpo, Quilmes",
+      "Anécdota / Detalle: Firmeza aérea y líder defensivo del Pincha.",
+      "Dato: Campeón de América 2009.",
+      "Apodo: 'Chavo'"
+    ]
+  },
+  {
+    "nombre": "José Sosa",
+    "pistas": [
+      "Posición: Enganche / Volante",
+      "Trayectoria: Estudiantes LP, Bayern Munich, Napoli, Metalist, Atlético de Madrid, Besiktas, Trabzonspor, Fenerbahce",
+      "Anécdota / Detalle: Autor del tiro libre perfecto en la final de 2006 a Boca.",
+      "Dato: Clase internacional pura.",
+      "Apodo: 'Principito'"
+    ]
+  },
+  {
+    "nombre": "Ezequiel Muñoz",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Boca Juniors, Palermo, Sampdoria, Genoa, Leganés, Lanús, Independiente, Estudiantes",
+      "Anécdota / Detalle: Central alto con gran cabezazo surgido en Boca.",
+      "Dato: Consolidado en la Serie A.",
+      "Apodo: Muñoz"
+    ]
+  },
+  {
+    "nombre": "Guillermo Burdisso",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: El Porvenir, Rosario Central, Roma, Arsenal, Boca, León, Independiente, Lanús, Universidad Católica",
+      "Anécdota / Detalle: Hizo dos goles en su debut en la Selección Argentina.",
+      "Dato: Campeón con Arsenal y Boca.",
+      "Apodo: 'Guille'"
+    ]
+  },
+  {
+    "nombre": "Lisandro Magallán",
+    "pistas": [
+      "Posición: Defensor Central",
+      "Trayectoria: Gimnasia LP, Boca, Ajax, Alavés, Crotone, Anderlecht, Elche, Pumas",
+      "Anécdota / Detalle: Defensor surgido del Lobo que jugó la final de Madrid en Boca.",
+      "Dato: Experiencia europea.",
+      "Apodo: 'Licha'"
+    ]
+  },
+  {
+    "nombre": "Gino Peruzzi",
+    "pistas": [
+      "Posición: Lateral Derecho",
+      "Trayectoria: Vélez, Catania, Boca Juniors, San Lorenzo, Alianza Lima, FC Tbilisi",
+      "Anécdota / Detalle: Proyección veloz y marca al mismísimo Neymar en la Libertadores.",
+      "Dato: Campeón en Vélez y Boca.",
+      "Apodo: 'Gino'"
+    ]
+  },
+  {
+    "nombre": "Emanuel Insúa",
+    "pistas": [
+      "Posición: Lateral Izquierdo",
+      "Trayectoria: Boca, Godoy Cruz, Granada, Udinese, Newell's, Racing, Panathinaikos, Vélez, Banfield",
+      "Anécdota / Detalle: Hermano de Emiliano Insúa, potente carrilero.",
+      "Dato: Garra por la banda izquierda.",
+      "Apodo: 'Mani'"
+    ]
+  },
+  {
+    "nombre": "Lucas Castro",
+    "pistas": [
+      "Posición: Volante",
+      "Trayectoria: Gimnasia LP, Racing, Catania, Chievo Verona, Cagliari, SPAL, Karagümrük, Sarmiento, Huracán",
+      "Anécdota / Detalle: Inolvidable hat-trick con Racing a San Lorenzo.",
+      "Dato: Años de trayectoria en Italia.",
+      "Apodo: 'Pata'"
+    ]
+  },
+  {
+    "nombre": "Franco Cristaldo",
+    "pistas": [
+      "Posición: Volante / Enganche",
+      "Trayectoria: Boca, Elche, Rayo Vallecano, San Martín (SJ), Central Córdoba, Huracán, Grêmio",
+      "Anécdota / Detalle: Gran figura y goleador de Huracán en 2022.",
+      "Dato: Vendido con éxito a Brasil.",
+      "Apodo: 'Franco'"
+    ]
+  },
+  {
+    "nombre": "Matías Coccaro",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Rampla Juniors, Villa Teresa, Montevideo City, Huracán, Montreal",
+      "Anécdota / Detalle: Famoso por festejar sus goles emulando a un zorro y su bigote estilo retro.",
+      "Dato: Querido por la hinchada del Globo.",
+      "Apodo: 'Zorro'"
+    ]
+  },
+  {
+    "nombre": "Ignacio Pussetto",
+    "pistas": [
+      "Posición: Extremo / Delantero",
+      "Trayectoria: Atlético Rafaela, Huracán, Udinese, Watford, Sampdoria, Pumas",
+      "Anécdota / Detalle: Velocidad desequilibrante en la delantera de Huracán.",
+      "Dato: Experiencia en Premier League y Serie A.",
+      "Apodo: 'Nacho'"
+    ]
+  },
+  {
+    "nombre": "Ramón Ábila",
+    "pistas": [
+      "Posición: Delantero Centro",
+      "Trayectoria: Instituto, Sarmiento, Deportivo Morón, Huracán, Cruzeiro, Boca, Minnesota, DC United, Colón, Barracas",
+      "Anécdota / Detalle: Goleador pesado con potencia física impredecible y festejos graciosos.",
+      "Dato: Goles decisivos en Huracán y Boca.",
+      "Apodo: 'Wanchope'"
+    ]
+  }
+];
+
+        // PUZZLES CONEXIONES
+        const CONNECTIONS_PUZZLES = [
+  {
+    "id": 1,
+    "titulo": "Desafío de Conexiones #1",
+    "categorias": [
+      {
+        "nombre": "Jugaron en Boca y en River",
+        "color": "#eab308",
+        "jugadores": [
+          "Oscar Ruggeri",
+          "Jonatan Maidana",
+          "Gabriel Batistuta",
+          "Claudio Caniggia"
+        ]
+      },
+      {
+        "nombre": "Arqueros campeones de Copa Libertadores",
+        "color": "#22c55e",
+        "jugadores": [
+          "Franco Armani",
+          "Agustín Rossi",
+          "Sebastián Torrico",
+          "Roberto Abbondanzieri"
+        ]
+      },
+      {
+        "nombre": "Apodos de Animales",
+        "color": "#38bdf8",
+        "jugadores": [
+          "Lucas Pratto",
+          "Lautaro Acosta",
+          "Luis Miguel Rodríguez",
+          "Julian Álvarez"
+        ]
+      },
+      {
+        "nombre": "Uruguayos que la rompieron en Argentina",
+        "color": "#a855f7",
+        "jugadores": [
+          "Enzo Francescoli",
+          "Brahian Alemán",
+          "Edinson Cavani",
+          "Santiago Silva"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "titulo": "Desafío de Conexiones #2",
+    "categorias": [
+      {
+        "nombre": "Surgieron de las inferiores de Rosario Central",
+        "color": "#eab308",
+        "jugadores": [
+          "Angel Di María",
+          "Giovani Lo Celso",
+          "Marco Ruben",
+          "Angel Correa"
+        ]
+      },
+      {
+        "nombre": "Especialistas legendarios pateando penales",
+        "color": "#22c55e",
+        "jugadores": [
+          "Néstor Ortigoza",
+          "José Sand",
+          "Sebastián Saja",
+          "Martín Palermo"
+        ]
+      },
+      {
+        "nombre": "Salió campeón de Primera División con Racing",
+        "color": "#38bdf8",
+        "jugadores": [
+          "Diego Milito",
+          "Lisandro López",
+          "Gustavo Bou",
+          "Ricardo Centurión"
+        ]
+      },
+      {
+        "nombre": "Salió Campeón del Mundo en Qatar 2022",
+        "color": "#a855f7",
+        "jugadores": [
+          "Enzo Fernández",
+          "Rodrigo De Paul",
+          "Lautaro Martínez",
+          "Nahuel Molina"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "titulo": "Desafío de Conexiones #3",
+    "categorias": [
+      {
+        "nombre": "Apodos de comida u objetos",
+        "color": "#eab308",
+        "jugadores": [
+          "Pity Martínez",
+          "Mateo Retegui",
+          "Marcos Acuña",
+          "Ariel Ortega"
+        ]
+      },
+      {
+        "nombre": "Jugaron en Vélez Sarsfield y en Boca Juniors",
+        "color": "#22c55e",
+        "jugadores": [
+          "Mauro Zárate",
+          "Fernando Gago",
+          "Lucas Pratto",
+          "Santiago Silva"
+        ]
+      },
+      {
+        "nombre": "Goleadores icónicos de Lanús",
+        "color": "#38bdf8",
+        "jugadores": [
+          "Lautaro Acosta",
+          "José Sand",
+          "Sebastian Blanco",
+          "Diego Valeri"
+        ]
+      },
+      {
+        "nombre": "Campeones de la Copa Sudamericana con Independiente 2017",
+        "color": "#a855f7",
+        "jugadores": [
+          "Ezequiel Barco",
+          "Nicolás Tagliafico",
+          "Emmanuel Gigliotti",
+          "Maximiliano Meza"
+        ]
+      }
+    ]
+  }
+];
+
+        const ALL_PLAYER_NAMES = DATABASE.map(p => p.nombre);
+
+        // ESTADO JUGADOR INCÓGNITO
+        let incognitoMode = 'daily';
+        let targetPlayer = null;
+        let currentAttempt = 0;
+        let isIncognitoOver = false;
+        let incognitoHistory = [];
+
+        // ESTADO CONEXIONES
+        let currentConnPuzzle = CONNECTIONS_PUZZLES[0];
+        let remainingCards = [];
+        let selectedCards = [];
+        let solvedCategories = [];
+        let connErrorsLeft = 4;
+        let isConnOver = false;
+
+        // LOCAL STORAGE STATS
+        let stats = JSON.parse(localStorage.getItem('futbol_app_stats')) || {
+            played: 0, wins: 0, streak: 0, lastDate: ''
+        };
+
+        window.onload = () => {
+            initIncognito('daily');
+            initConexiones(0);
+            setupSearch();
+            updateStatsUI();
+        };
+
+        function switchGame(game) {
+            document.getElementById('tabIncognito').classList.toggle('active', game === 'incognito');
+            document.getElementById('tabConexiones').classList.toggle('active', game === 'conexiones');
+            
+            document.getElementById('sectionIncognito').classList.toggle('active', game === 'incognito');
+            document.getElementById('sectionConexiones').classList.toggle('active', game === 'conexiones');
+        }
+
+        /* --- LÓGICA JUGADOR INCÓGNITO --- */
+        function getDailyPlayer() {
+            const today = new Date().toISOString().split('T')[0];
+            let hash = 0;
+            for (let i = 0; i < today.length; i++) {
+                hash = today.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const index = Math.abs(hash) % DATABASE.length;
+            return DATABASE[index];
+        }
+
+        function initIncognito(mode) {
+            incognitoMode = mode;
+            currentAttempt = 0;
+            isIncognitoOver = false;
+            incognitoHistory = [];
+
+            if (mode === 'daily') {
+                targetPlayer = getDailyPlayer();
+                document.getElementById('btnNextPractice').style.display = 'none';
+            } else {
+                const randomIndex = Math.floor(Math.random() * DATABASE.length);
+                targetPlayer = DATABASE[randomIndex];
+                document.getElementById('btnNextPractice').style.display = 'block';
+            }
+
+            renderClues();
+            updateDots();
+            document.getElementById('searchInput').disabled = isIncognitoOver;
+        }
+
+        function switchModeIncognito(mode) {
+            if (mode === incognitoMode) return;
+            document.getElementById('btnModeDaily').classList.toggle('active', mode === 'daily');
+            document.getElementById('btnModePractice').classList.toggle('active', mode === 'practice');
+            initIncognito(mode);
+        }
+
+        function renderClues() {
+            const cluesContainer = document.getElementById('cluesList');
+            cluesContainer.innerHTML = '';
+            document.getElementById('clueCounterText').innerText = `Pista ${Math.min(currentAttempt + 1, 5)} de 5`;
+
+            targetPlayer.pistas.forEach((pista, index) => {
+                const clueDiv = document.createElement('div');
+                if (index <= currentAttempt) {
+                    clueDiv.className = 'clue-item';
+                    clueDiv.innerHTML = `<span class="clue-tag">PISTA ${index + 1}</span>${pista}`;
+                } else {
+                    clueDiv.className = 'clue-item locked';
+                    clueDiv.innerHTML = `<span class="clue-tag">PISTA ${index + 1}</span>🔒 Pista bloqueada`;
+                }
+                cluesContainer.appendChild(clueDiv);
+            });
+        }
+
+        function updateDots() {
+            const dotsContainer = document.getElementById('attemptsDots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i < currentAttempt) dot.classList.add('used');
+                else if (i === currentAttempt && !isIncognitoOver) dot.classList.add('current');
+                if (isIncognitoOver && incognitoHistory.includes('SUCCESS') && i === currentAttempt) dot.classList.add('success');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function setupSearch() {
+            const input = document.getElementById('searchInput');
+            const box = document.getElementById('suggestionsBox');
+
+            input.addEventListener('input', () => {
+                const query = input.value.trim().toLowerCase();
+                if (query.length < 1) { box.classList.remove('active'); return; }
+                const matches = ALL_PLAYER_NAMES.filter(name => name.toLowerCase().includes(query));
+
+                if (matches.length > 0) {
+                    box.innerHTML = matches.slice(0, 8).map(name => 
+                        `<div class="suggestion-item" onclick="selectSuggestion('${name}')">${name}</div>`
+                    ).join('');
+                    box.classList.add('active');
+                } else { box.classList.remove('active'); }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !box.contains(e.target)) box.classList.remove('active');
+            });
+        }
+
+        function selectSuggestion(name) {
+            document.getElementById('searchInput').value = name;
+            document.getElementById('suggestionsBox').classList.remove('active');
+            submitGuess();
+        }
+
+        function submitGuess() {
+            if (isIncognitoOver) return;
+            const input = document.getElementById('searchInput');
+            const guess = input.value.trim();
+            if (!guess) return;
+
+            const normalize = str => str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+            if (normalize(guess) === normalize(targetPlayer.nombre)) {
+                isIncognitoOver = true;
+                incognitoHistory.push('SUCCESS');
+                if (incognitoMode === 'daily') saveStats(true);
+                showEndModal(true);
+            } else {
+                incognitoHistory.push('FAIL');
+                currentAttempt++;
+                if (currentAttempt >= 5) {
+                    isIncognitoOver = true;
+                    if (incognitoMode === 'daily') saveStats(false);
+                    showEndModal(false);
+                } else {
+                    showToast("❌ Incorrecto. ¡Mirá la nueva pista!");
+                }
+            }
+
+            input.value = '';
+            document.getElementById('suggestionsBox').classList.remove('active');
+            renderClues();
+            updateDots();
+        }
+
+        /* --- LÓGICA CONEXIONES --- */
+        function initConexiones(puzzleIndex) {
+            currentConnPuzzle = CONNECTIONS_PUZZLES[puzzleIndex % CONNECTIONS_PUZZLES.length];
+            document.getElementById('connTitle').innerText = `🧩 ${currentConnPuzzle.titulo}`;
+            
+            solvedCategories = [];
+            selectedCards = [];
+            connErrorsLeft = 4;
+            isConnOver = false;
+
+            // Extraer las 16 cartas
+            remainingCards = [];
+            currentConnPuzzle.categorias.forEach(cat => {
+                cat.jugadores.forEach(j => remainingCards.push({ nombre: j, catNombre: cat.nombre, color: cat.color }));
+            });
+
+            // Mezclar
+            remainingCards.sort(() => Math.random() - 0.5);
+
+            renderConexionesUI();
+        }
+
+        function renderConexionesUI() {
+            // Render solved
+            const solvedBox = document.getElementById('solvedCategoriesContainer');
+            solvedBox.innerHTML = '';
+            solvedCategories.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'solved-category';
+                div.style.backgroundColor = cat.color;
+                div.innerHTML = `
+                    <div class="cat-title">${cat.nombre}</div>
+                    <div class="cat-players">${cat.jugadores.join(', ')}</div>
+                `;
+                solvedBox.appendChild(div);
+            });
+
+            // Render remaining grid
+            const grid = document.getElementById('connectionsGrid');
+            grid.innerHTML = '';
+
+            remainingCards.forEach(card => {
+                const btn = document.createElement('div');
+                btn.className = 'conn-card' + (selectedCards.includes(card.nombre) ? ' selected' : '');
+                btn.innerText = card.nombre;
+                btn.onclick = () => toggleCardSelection(card.nombre);
+                grid.appendChild(btn);
+            });
+
+            // Update controls
+            document.getElementById('connErrorsText').innerText = connErrorsLeft;
+            const submitBtn = document.getElementById('btnSubmitConn');
+            submitBtn.innerText = `Enviar (${selectedCards.length}/4)`;
+            submitBtn.disabled = selectedCards.length !== 4 || isConnOver;
+        }
+
+        function toggleCardSelection(nombre) {
+            if (isConnOver) return;
+            if (selectedCards.includes(nombre)) {
+                selectedCards = selectedCards.filter(n => n !== nombre);
+            } else {
+                if (selectedCards.length < 4) selectedCards.push(nombre);
+            }
+            renderConexionesUI();
+        }
+
+        function deselectAllConnections() {
+            selectedCards = [];
+            renderConexionesUI();
+        }
+
+        function shuffleConnections() {
+            remainingCards.sort(() => Math.random() - 0.5);
+            renderConexionesUI();
+        }
+
+        function submitConnection() {
+            if (selectedCards.length !== 4 || isConnOver) return;
+
+            // Verificar si los 4 pertenecen a la misma categoría
+            let matchedCategory = null;
+            for (let cat of currentConnPuzzle.categorias) {
+                const matchCount = selectedCards.filter(name => cat.jugadores.includes(name)).length;
+                if (matchCount === 4) {
+                    matchedCategory = cat;
+                    break;
+                } else if (matchCount === 3) {
+                    showToast("💡 ¡A 1 jugador de distancia!");
+                }
+            }
+
+            if (matchedCategory) {
+                // Acierto
+                solvedCategories.push(matchedCategory);
+                remainingCards = remainingCards.filter(c => !selectedCards.includes(c.nombre));
+                selectedCards = [];
+                showToast("🎉 ¡Grupo correcto!");
+
+                if (solvedCategories.length === 4) {
+                    isConnOver = true;
+                    showToast("🏆 ¡COMPLETASTE TODAS LAS CONEXIONES!");
+                }
+            } else {
+                // Error
+                connErrorsLeft--;
+                showToast("❌ Incorrecto");
+                if (connErrorsLeft <= 0) {
+                    isConnOver = true;
+                    showToast("👻 ¡Sin oportunidades! Revelando soluciones...");
+                    // Resolver todas automáticamente
+                    solvedCategories = [...currentConnPuzzle.categorias];
+                    remainingCards = [];
+                }
+            }
+
+            renderConexionesUI();
+        }
+
+        /* --- STATS & UTILS --- */
+        function saveStats(won) {
+            const today = new Date().toISOString().split('T')[0];
+            if (stats.lastDate === today) return;
+            stats.played++;
+            stats.lastDate = today;
+            if (won) { stats.wins++; stats.streak++; } else { stats.streak = 0; }
+            localStorage.setItem('futbol_app_stats', JSON.stringify(stats));
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            const winPct = stats.played > 0 ? Math.round((stats.wins / stats.played) * 100) : 0;
+            document.getElementById('statPlayed').innerText = stats.played;
+            document.getElementById('statWinPct').innerText = winPct + '%';
+            document.getElementById('statStreak').innerText = stats.streak;
+            document.getElementById('statPlayed2').innerText = stats.played;
+            document.getElementById('statWinPct2').innerText = winPct + '%';
+            document.getElementById('statStreak2').innerText = stats.streak;
+        }
+
+        function showEndModal(won) {
+            document.getElementById('modalTitle').innerText = won ? "🎉 ¡GOLAZO!" : "👻 ¡A LA TRIBUNA!";
+            document.getElementById('modalSub').innerText = won ? `Adivinaste en el intento ${currentAttempt + 1}/5:` : "El jugador era:";
+            document.getElementById('modalPlayerName').innerText = targetPlayer.nombre;
+            openModal('gameModal');
+        }
+
+        function nextPracticeGame() {
+            closeModal('gameModal');
+            initIncognito('practice');
+        }
+
+        function shareIncognitoResult() {
+            const attemptsText = isIncognitoOver && incognitoHistory.includes('SUCCESS') ? `${currentAttempt + 1}/5` : 'X/5';
+            let emojiMatrix = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < currentAttempt) emojiMatrix += '⬛ ';
+                else if (i === currentAttempt && incognitoHistory.includes('SUCCESS')) emojiMatrix += '🟩 ';
+                else emojiMatrix += '⬜ ';
+            }
+
+            const text = `⚽ Jugador Incógnito
+Resultado: ${attemptsText}
+${emojiMatrix}
+
+¡Jugá vos también en la web!`;
+            navigator.clipboard.writeText(text).then(() => showToast("¡Resultado copiado! 📋"));
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    </script>
+</body>
+</html>
